@@ -16,8 +16,12 @@ const Dashboard = () => {
             Sign in to unlock personalized recommendations and progress tracking.
           </p>
           <div className="flex gap-2">
-            <Button variant="hero">Log in</Button>
-            <Button variant="outline">Create account</Button>
+            <Button variant="hero" asChild>
+              <a href="/auth">Log in</a>
+            </Button>
+            <Button variant="outline" asChild>
+              <a href="/auth?mode=signup">Create account</a>
+            </Button>
           </div>
         </div>
 
