@@ -40,6 +40,12 @@ export const Navbar = () => {
           <Button variant="ghost" asChild>
             <a href="/dashboard">Dashboard</a>
           </Button>
+          <Button variant="ghost" asChild>
+            <a href="/auth">Log in</a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/admin/login">Admin</a>
+          </Button>
           <Button variant="premium" asChild>
             <a href="/membership">Go Premium</a>
           </Button>
