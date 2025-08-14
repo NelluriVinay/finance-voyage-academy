@@ -69,20 +69,21 @@ const Auth = () => {
   };
 
   const handleSignup = async (values: z.infer<typeof signupSchema>) => {
-    const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: { emailRedirectTo: redirectUrl },
     });
     if (error) {
       toast({ title: "Sign up failed", description: error.message, variant: "destructive" });
       return;
     }
     toast({
-      title: "Check your email",
-      description: "We sent a confirmation link to verify your account.",
+      title: "Account created successfully!",
+      description: "You can now log in with your credentials.",
     });
+    // Automatically switch to login tab after successful signup
+    setTab("login");
+    signupForm.reset();
   };
 
   return (
