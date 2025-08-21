@@ -8,6 +8,7 @@ import SiteLayout from "./layouts/SiteLayout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Courses from "./pages/Courses";
+import Videos from "./pages/Videos";
 import Live from "./pages/Live";
 import Dashboard from "./pages/Dashboard";
 import News from "./pages/News";
@@ -32,6 +33,7 @@ const App = () => (
             <Route element={<SiteLayout />}>
               <Route path="/" element={<Index />} />
               <Route path="/courses" element={<Courses />} />
+              <Route path="/videos" element={<Videos />} />
               <Route path="/live" element={<Live />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/news" element={<News />} />

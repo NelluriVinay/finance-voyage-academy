@@ -3,6 +3,7 @@ import {
   Home,
   BookOpen,
   Video,
+  Play,
   BarChart3,
   Newspaper,
   Users,
@@ -29,6 +30,7 @@ import { cn } from "@/lib/utils";
 const mainItems = [
   { title: "Home", url: "/", icon: Home },
   { title: "Courses", url: "/courses", icon: BookOpen },
+  { title: "Videos", url: "/videos", icon: Play },
   { title: "Live Sessions", url: "/live", icon: Video },
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
   { title: "News", url: "/news", icon: Newspaper },
