@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
+import YouTubeVideos from "@/components/YouTubeVideos";
 import { Search, BookOpen, TrendingUp, Users, DollarSign, Star, PieChart, Shield, Play, CheckCircle, Award, Clock, User } from "lucide-react";
 import heroImage from "@/assets/finance-hero.jpg";
 
@@ -305,6 +306,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* YouTube Videos Section */}
+      <YouTubeVideos />
 
       {/* CTA Section */}
       <section className="py-20 bg-finance-gradient text-white relative overflow-hidden">
