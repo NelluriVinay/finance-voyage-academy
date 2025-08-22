@@ -256,7 +256,7 @@ const VideoManagement = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => window.open(video.youtube_url, "_blank")}
+                            onClick={() => window.open(video.youtube_url, "_blank", "noopener,noreferrer")}
                           >
                             View
                           </Button>
