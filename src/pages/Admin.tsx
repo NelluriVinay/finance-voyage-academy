@@ -1,16 +1,248 @@
+import { useEffect, useState } from "react";
 import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Users, UserCheck, UserX, Crown } from "lucide-react";
+
+interface MemberData {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  email: string;
+  phone: string | null;
+  avatar_url: string | null;
+  created_at: string;
+  roles: string[];
+}
 
 const Admin = () => {
+  const [members, setMembers] = useState<MemberData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalMembers: 0,
+    activeMembers: 0,
+    adminCount: 0,
+  });
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
+      // Fetch profiles with their roles
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (profilesError) throw profilesError;
+
+      // Fetch all user roles
+      const { data: rolesData, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id, role");
+
+      if (rolesError) throw rolesError;
+
+      // Combine profiles with their roles
+      const membersWithRoles = profilesData.map((profile) => {
+        const userRoles = rolesData
+          .filter((role) => role.user_id === profile.user_id)
+          .map((role) => role.role);
+
+        return {
+          ...profile,
+          roles: userRoles,
+        };
+      });
+
+      setMembers(membersWithRoles);
+
+      // Calculate stats
+      const totalMembers = membersWithRoles.length;
+      const adminCount = membersWithRoles.filter((member) =>
+        member.roles.includes("admin")
+      ).length;
+
+      setStats({
+        totalMembers,
+        activeMembers: totalMembers, // Assuming all profiles are active
+        adminCount,
+      });
+    } catch (error) {
+      console.error("Error fetching members:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch member data.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
+      case "admin":
+        return "destructive";
+      case "moderator":
+        return "secondary";
+      default:
+        return "outline";
+    }
+  };
+
   return (
     <>
       <SEO
-        title="Admin Dashboard | Finance Voyage Academy"
-        description="Admin area for managing Finance Voyage Academy."
+        title="Admin Dashboard | WealthWise Academy"
+        description="Admin area for managing WealthWise Academy members and platform."
       />
-      <main className="container mx-auto max-w-3xl py-10">
-        <h1 className="mb-4 text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">You have admin access.</p>
-      </main>
+      
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto py-8 px-4 max-w-7xl">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+            <p className="text-muted-foreground">
+              Manage members and monitor platform activity
+            </p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Members</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalMembers}</div>
+                <p className="text-xs text-muted-foreground">
+                  Registered users
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Members</CardTitle>
+                <UserCheck className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.activeMembers}</div>
+                <p className="text-xs text-muted-foreground">
+                  Currently active
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Administrators</CardTitle>
+                <Crown className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.adminCount}</div>
+                <p className="text-xs text-muted-foreground">
+                  Admin accounts
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Members Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>All Members</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="text-muted-foreground">Loading members...</div>
+                </div>
+              ) : (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Roles</TableHead>
+                        <TableHead>Joined</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {members.map((member) => (
+                        <TableRow key={member.id}>
+                          <TableCell className="font-medium">
+                            {member.full_name || "No name provided"}
+                          </TableCell>
+                          <TableCell>{member.email}</TableCell>
+                          <TableCell>
+                            {member.phone || (
+                              <span className="text-muted-foreground">Not provided</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-1 flex-wrap">
+                              {member.roles.length > 0 ? (
+                                member.roles.map((role) => (
+                                  <Badge
+                                    key={role}
+                                    variant={getRoleBadgeVariant(role)}
+                                    className="text-xs"
+                                  >
+                                    {role}
+                                  </Badge>
+                                ))
+                              ) : (
+                                <Badge variant="outline" className="text-xs">
+                                  user
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {formatDate(member.created_at)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  
+                  {members.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No members found.
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </>
   );
 };
