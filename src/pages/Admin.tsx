@@ -32,8 +32,6 @@ interface MemberData {
 const Admin = () => {
   const [members, setMembers] = useState<MemberData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [makingAdmin, setMakingAdmin] = useState(false);
   const [stats, setStats] = useState({
     totalMembers: 0,
     activeMembers: 0,
@@ -118,42 +116,49 @@ const Admin = () => {
     }
   };
 
-  const handleMakeAdmin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newAdminEmail.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter an email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setMakingAdmin(true);
+  const handleToggleAdmin = async (userEmail: string, currentRoles: string[]) => {
+    const isAdmin = currentRoles.includes('admin');
+    
     try {
-      const { error } = await supabase
-        .rpc('make_user_admin' as any, {
-          user_email: newAdminEmail.trim()
+      if (isAdmin) {
+        // Remove admin role
+        const { error } = await supabase
+          .from('user_roles')
+          .delete()
+          .match({ 
+            user_id: members.find(m => m.email === userEmail)?.user_id,
+            role: 'admin'
+          });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Success",
+          description: `Removed admin role from ${userEmail}`,
         });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `User ${newAdminEmail} has been made an admin.`,
-      });
+      } else {
+        // Add admin role
+        const { error } = await supabase
+          .rpc('make_user_admin' as any, {
+            user_email: userEmail
+          });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Success", 
+          description: `Made ${userEmail} an admin`,
+        });
+      }
       
-      setNewAdminEmail("");
-      fetchMembers(); // Refresh the members list
+      fetchMembers(); // Refresh the list
     } catch (error: any) {
-      console.error("Error making user admin:", error);
+      console.error("Error changing role:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to make user admin.",
+        description: error.message || "Failed to change user role",
         variant: "destructive",
       });
-    } finally {
-      setMakingAdmin(false);
     }
   };
 
@@ -231,25 +236,8 @@ const Admin = () => {
 
             <TabsContent value="members" className="mt-6">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader>
                   <CardTitle>All Members</CardTitle>
-                  <form onSubmit={handleMakeAdmin} className="flex gap-2">
-                    <Input
-                      type="email"
-                      placeholder="Enter email to make admin"
-                      value={newAdminEmail}
-                      onChange={(e) => setNewAdminEmail(e.target.value)}
-                      className="w-64"
-                    />
-                    <Button 
-                      type="submit" 
-                      disabled={makingAdmin}
-                      className="flex items-center gap-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      {makingAdmin ? "Adding..." : "Make Admin"}
-                    </Button>
-                  </form>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
@@ -266,6 +254,7 @@ const Admin = () => {
                             <TableHead>Phone</TableHead>
                             <TableHead>Roles</TableHead>
                             <TableHead>Joined</TableHead>
+                            <TableHead>Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -301,6 +290,16 @@ const Admin = () => {
                               </TableCell>
                               <TableCell className="text-muted-foreground">
                                 {formatDate(member.created_at)}
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  size="sm"
+                                  variant={member.roles.includes('admin') ? "destructive" : "default"}
+                                  onClick={() => handleToggleAdmin(member.email, member.roles)}
+                                  className="text-xs"
+                                >
+                                  {member.roles.includes('admin') ? 'Remove Admin' : 'Make Admin'}
+                                </Button>
                               </TableCell>
                             </TableRow>
                           ))}
