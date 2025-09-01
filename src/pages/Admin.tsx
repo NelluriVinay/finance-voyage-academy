@@ -12,8 +12,10 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, UserCheck, UserX, Crown, Video } from "lucide-react";
+import { Users, UserCheck, UserX, Crown, Video, Plus } from "lucide-react";
 import VideoManagement from "@/components/admin/VideoManagement";
 
 interface MemberData {
@@ -30,6 +32,8 @@ interface MemberData {
 const Admin = () => {
   const [members, setMembers] = useState<MemberData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [makingAdmin, setMakingAdmin] = useState(false);
   const [stats, setStats] = useState({
     totalMembers: 0,
     activeMembers: 0,
@@ -114,6 +118,45 @@ const Admin = () => {
     }
   };
 
+  const handleMakeAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAdminEmail.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setMakingAdmin(true);
+    try {
+      const { error } = await supabase
+        .rpc('make_user_admin' as any, {
+          user_email: newAdminEmail.trim()
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `User ${newAdminEmail} has been made an admin.`,
+      });
+      
+      setNewAdminEmail("");
+      fetchMembers(); // Refresh the members list
+    } catch (error: any) {
+      console.error("Error making user admin:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to make user admin.",
+        variant: "destructive",
+      });
+    } finally {
+      setMakingAdmin(false);
+    }
+  };
+
   return (
     <>
       <SEO
@@ -188,8 +231,25 @@ const Admin = () => {
 
             <TabsContent value="members" className="mt-6">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>All Members</CardTitle>
+                  <form onSubmit={handleMakeAdmin} className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="Enter email to make admin"
+                      value={newAdminEmail}
+                      onChange={(e) => setNewAdminEmail(e.target.value)}
+                      className="w-64"
+                    />
+                    <Button 
+                      type="submit" 
+                      disabled={makingAdmin}
+                      className="flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      {makingAdmin ? "Adding..." : "Make Admin"}
+                    </Button>
+                  </form>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
