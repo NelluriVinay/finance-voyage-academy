@@ -1,352 +1,245 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import SEO from "@/components/SEO";
-import YouTubeVideos from "@/components/YouTubeVideos";
-import { Search, BookOpen, TrendingUp, Users, DollarSign, Star, PieChart, Shield, Play, CheckCircle, Award, Clock, User } from "lucide-react";
+import { Crown, BookOpen, Users, Award, Quote, Star, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import heroImage from "@/assets/finance-hero.jpg";
 
-const categories = [
-  { name: "Stock Market Basics", Icon: TrendingUp, courses: "15+" },
-  { name: "Mutual Funds", Icon: PieChart, courses: "12+" },
-  { name: "Insurance Planning", Icon: Shield, courses: "8+" },
-  { name: "Tax Optimization", Icon: DollarSign, courses: "10+" },
-];
-
-const featured = [
-  { 
-    title: "Complete Stock Market Mastery", 
-    author: "Rajesh Kumar", 
-    level: "Beginner",
-    price: "₹2,999",
-    originalPrice: "₹4,999",
-    rating: 4.8,
-    students: "2,340",
-    duration: "6 weeks"
-  },
-  { 
-    title: "Mutual Fund Investment Strategy", 
-    author: "Priya Sharma", 
-    level: "Intermediate",
-    price: "₹3,999",
-    originalPrice: "₹5,999",
-    rating: 4.9,
-    students: "1,890",
-    duration: "4 weeks"
-  },
-  { 
-    title: "Advanced Portfolio Management", 
-    author: "Amit Patel", 
-    level: "Advanced",
-    price: "₹5,999",
-    originalPrice: "₹8,999",
-    rating: 4.7,
-    students: "956",
-    duration: "8 weeks"
-  },
-];
-
-const experts = [
+const testimonials = [
   {
-    name: "Dr. Rajesh Kumar",
-    specialization: "Stock Market Expert",
-    experience: "15+ years",
-    rating: 4.9,
-    sessions: "500+",
-    sebiCertified: true
+    quote: "WealthWise Academy transformed my understanding of investments. From zero knowledge to confidently managing my portfolio in just 6 months.",
+    author: "Rahul Sharma",
+    position: "Software Engineer, Mumbai",
+    rating: 5
   },
   {
-    name: "Priya Sharma",
-    specialization: "Mutual Fund Advisor",
-    experience: "12+ years", 
-    rating: 4.8,
-    sessions: "350+",
-    sebiCertified: true
+    quote: "The personalized guidance helped me plan my retirement effectively. I wish I had found them earlier in my career.",
+    author: "Priya Patel",
+    position: "Teacher, Pune",
+    rating: 5
   },
   {
-    name: "Amit Patel",
-    specialization: "Tax Planning Specialist",
-    experience: "10+ years",
-    rating: 4.7,
-    sessions: "280+",
-    sebiCertified: true
+    quote: "Excellent courses that are practical and easy to understand. The SEBI-certified instructors make all the difference.",
+    author: "Amit Kumar",
+    position: "Bank Manager, Delhi",
+    rating: 5
   }
+];
+
+const features = [
+  {
+    icon: Crown,
+    title: "Premium Learning Experience",
+    description: "Carefully curated content designed for middle-class Indians looking to build sustainable wealth."
+  },
+  {
+    icon: Award,
+    title: "SEBI Certified Experts",
+    description: "Learn from industry professionals with decades of experience in financial planning and investment management."
+  },
+  {
+    icon: Users,
+    title: "Community of Learners",
+    description: "Connect with like-minded individuals on their wealth-building journey and share experiences."
+  }
+];
+
+const stats = [
+  { number: "50,000+", label: "Students Transformed" },
+  { number: "₹500Cr+", label: "Wealth Created" },
+  { number: "25+", label: "Expert Mentors" },
+  { number: "4.9/5", label: "Average Rating" }
 ];
 
 const Index = () => {
   return (
     <>
       <SEO
-        title="WealthWise Academy - Learn Smart Investing for Middle Class India"
-        description="Master finance and investing with SEBI-certified experts. Personalized guidance, live sessions, and courses designed for middle-class families."
+        title="WealthWise Academy - Elite Financial Education for Modern India"
+        description="Join India's most prestigious financial education platform. Learn wealth building from SEBI-certified experts with our exclusive courses and personalized guidance."
         structuredData={{
           "@context": "https://schema.org",
           "@type": "EducationalOrganization",
           "name": "WealthWise Academy",
-          "description": "Online finance education platform for middle-class Indians",
+          "description": "Premium financial education platform for India",
           "url": "https://wealthwise-academy.com"
         }}
       />
-      
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 hero-gradient opacity-95"></div>
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        ></div>
+
+      {/* Classic Hero Section with Rich Typography */}
+      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0di00aC0ydjRoLTR2Mmg0djRoMnYtNGg0di0yaC00em0wLTMwVjBoLTJ2NGgtNHYyaDR2NGgyVjZoNFY0aC00ek02IDM0di00SDR2NEgwdjJoNHY0aDJ2LTRoNHYtMkg2ek02IDRWMEg0djRIMHYyaDR2NGgyVjZoNFY0SDZ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
         
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Your Journey to 
-              <span className="block text-gold">Financial Freedom</span>
-              <span className="block">Starts Here</span>
+        <div className="relative z-10 container mx-auto px-6 text-center text-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8">
+              <Sparkles className="w-4 h-4 mr-2 text-yellow-400" />
+              <span className="text-sm font-medium">India's Premier Financial Education Platform</span>
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
+              <span className="block text-white">Master the Art of</span>
+              <span className="block bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 bg-clip-text text-transparent">
+                Wealth Creation
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
-              Learn smart investing from <span className="text-gold font-semibold">SEBI-certified experts</span> who understand 
-              middle-class challenges. Get personalized guidance to build wealth systematically.
+            
+            <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto leading-relaxed text-slate-200">
+              Join India's most exclusive financial education community. Learn sophisticated investment strategies 
+              from <span className="text-yellow-400 font-semibold">SEBI-certified masters</span> who have 
+              guided thousands to financial independence.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+              <Button 
+                size="lg" 
+                className="h-16 px-10 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black font-bold text-lg rounded-xl shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300"
+              >
+                Begin Your Journey
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+              
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-16 px-10 border-2 border-white/30 text-white hover:bg-white hover:text-slate-900 font-bold text-lg rounded-xl backdrop-blur-md transition-all duration-300"
+              >
+                <BookOpen className="w-6 h-6 mr-3" />
+                Explore Curriculum
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Elegant Stats Section */}
+      <section className="py-20 bg-slate-50 border-t border-slate-200">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center group">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
+                  <h3 className="text-4xl font-bold text-slate-800 mb-2">{stat.number}</h3>
+                  <p className="text-slate-600 font-medium">{stat.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Premium Features Section */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-bold text-slate-800 mb-6">
+              Why Choose <span className="text-yellow-600">WealthWise?</span>
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Experience the difference that premium education and expert guidance can make in your financial journey.
             </p>
           </div>
           
-          <div className="max-w-3xl mx-auto mb-12 animate-slide-in-left">
-            <div className="glass-effect rounded-2xl p-4">
-              <div className="flex gap-3">
-                <Input 
-                  placeholder="What would you like to learn today? (e.g., mutual funds, stock market)" 
-                  className="flex-1 h-14 text-foreground bg-background/90"
-                />
-                <Button size="lg" className="h-14 px-8 bg-trust-green hover:bg-trust-green/90">
-                  <Search className="w-5 h-5 mr-2" />
-                  Search
-                </Button>
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="group">
+                <div className="bg-gradient-to-br from-slate-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-3 border border-slate-100">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-800 mb-4">{feature.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section with Rich Design */}
+      <section className="py-24 bg-gradient-to-br from-slate-800 via-slate-900 to-blue-900 text-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-bold mb-6">Success Stories</h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Hear from our community of successful wealth builders who transformed their financial lives.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="group">
+                <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 group-hover:-translate-y-2">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  
+                  <Quote className="w-8 h-8 text-yellow-400 mb-4" />
+                  
+                  <blockquote className="text-lg mb-6 leading-relaxed">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  
+                  <div className="border-t border-white/20 pt-4">
+                    <div className="font-bold text-yellow-400">{testimonial.author}</div>
+                    <div className="text-sm text-slate-300">{testimonial.position}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sophisticated CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/5"></div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-5xl md:text-6xl font-bold mb-8">
+              Ready to Join the Elite?
+            </h2>
+            <p className="text-xl mb-12 leading-relaxed text-black/80">
+              Take the first step towards financial mastery. Join thousands of successful investors 
+              who have transformed their wealth with our premium education.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                <CheckCircle2 className="w-8 h-8 mx-auto mb-3 text-black" />
+                <h3 className="font-bold mb-2">Lifetime Access</h3>
+                <p className="text-sm text-black/70">Complete course library + future updates</p>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                <CheckCircle2 className="w-8 h-8 mx-auto mb-3 text-black" />
+                <h3 className="font-bold mb-2">Expert Mentorship</h3>
+                <p className="text-sm text-black/70">Direct access to SEBI-certified advisors</p>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                <CheckCircle2 className="w-8 h-8 mx-auto mb-3 text-black" />
+                <h3 className="font-bold mb-2">Proven Results</h3>
+                <p className="text-sm text-black/70">Track record of consistent wealth creation</p>
               </div>
             </div>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-4 mb-12 animate-slide-in-right">
-            {categories.map(({ name, Icon, courses }) => (
-              <Badge key={name} className="sebi-badge text-base py-3 px-6 hover:scale-105 transition-transform cursor-pointer">
-                <Icon className="w-5 h-5 mr-2" />
-                {name} ({courses})
-              </Badge>
-            ))}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in">
-            <Button size="lg" className="h-14 px-8 bg-gold text-gold-foreground hover:bg-gold/90 text-lg font-semibold">
-              <Play className="w-5 h-5 mr-3" />
-              Watch Free Demo
-            </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 border-2 border-white text-white hover:bg-white hover:text-foreground text-lg font-semibold">
-              <BookOpen className="w-5 h-5 mr-3" />
-              Explore Courses
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Indicators */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="animate-fade-in">
-              <h3 className="text-3xl font-bold text-primary-blue">50,000+</h3>
-              <p className="text-muted-foreground">Students Trained</p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Button 
+                size="lg" 
+                className="h-16 px-10 bg-black text-white hover:bg-slate-800 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300"
+              >
+                Start Your Transformation
+                <Crown className="w-6 h-6 ml-3" />
+              </Button>
+              
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="h-16 px-10 border-2 border-black text-black hover:bg-black hover:text-white font-bold text-lg rounded-xl transition-all duration-300"
+              >
+                <Users className="w-6 h-6 mr-3" />
+                Schedule Expert Call
+              </Button>
             </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <h3 className="text-3xl font-bold text-trust-green">25+</h3>
-              <p className="text-muted-foreground">SEBI Certified Experts</p>
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <h3 className="text-3xl font-bold text-gold">4.9/5</h3>
-              <p className="text-muted-foreground">Average Rating</p>
-            </div>
-            <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <h3 className="text-3xl font-bold text-primary-blue">₹2.5Cr+</h3>
-              <p className="text-muted-foreground">Wealth Created</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Courses */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Most Popular Courses</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Handpicked courses designed specifically for middle-class families to build wealth systematically
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {featured.map((course, index) => (
-              <Card key={index} className="hover:shadow-trust-large transition-all duration-300 hover:-translate-y-2 group border-0 shadow-trust-medium">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge variant="outline" className="border-primary-blue text-primary-blue">{course.level}</Badge>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-gold text-gold" />
-                      <span className="text-sm font-medium">{course.rating}</span>
-                    </div>
-                  </div>
-                  <CardTitle className="text-xl group-hover:text-primary-blue transition-colors">{course.title}</CardTitle>
-                  <CardDescription className="flex items-center text-sm">
-                    <Award className="w-4 h-4 mr-1 text-trust-green" />
-                    By {course.author} • SEBI Certified
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <div className="flex items-center">
-                        <User className="w-4 h-4 mr-1" />
-                        {course.students} students
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        {course.duration}
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-2xl font-bold text-trust-green">{course.price}</span>
-                        <span className="text-sm text-muted-foreground line-through ml-2">{course.originalPrice}</span>
-                      </div>
-                      <Button className="bg-primary-blue hover:bg-primary-blue-dark">
-                        Enroll Now
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SEBI Experts Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-blue-light to-muted">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Meet Our SEBI-Certified Experts</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Learn from professionals who have dedicated their careers to helping middle-class families achieve financial independence
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {experts.map((expert, index) => (
-              <Card key={index} className="text-center hover:shadow-trust-large transition-all duration-300 hover:-translate-y-2 border-0 shadow-trust-medium">
-                <CardHeader>
-                  <div className="w-24 h-24 rounded-full bg-finance-gradient mx-auto mb-4 flex items-center justify-center">
-                    <User className="w-12 h-12 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{expert.name}</CardTitle>
-                  <CardDescription className="text-base">{expert.specialization}</CardDescription>
-                  {expert.sebiCertified && (
-                    <Badge className="sebi-badge mx-auto mt-2">
-                      <Shield className="w-4 h-4 mr-1" />
-                      SEBI Certified
-                    </Badge>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Experience:</span>
-                      <span className="font-medium">{expert.experience}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Rating:</span>
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 fill-gold text-gold mr-1" />
-                        <span className="font-medium">{expert.rating}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Sessions:</span>
-                      <span className="font-medium">{expert.sessions}</span>
-                    </div>
-                  </div>
-                  <Button className="w-full mt-4 bg-trust-green hover:bg-trust-green/90">
-                    Book 1-on-1 Session
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Browse Categories */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Learn by Category</h2>
-            <p className="text-xl text-muted-foreground">
-              Structured learning paths for every aspect of personal finance
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map(({ name, Icon, courses }) => (
-              <Card key={name} className="text-center hover:shadow-trust-large transition-all duration-300 hover:-translate-y-2 cursor-pointer group border-0 shadow-trust-soft">
-                <CardContent className="pt-8 pb-6">
-                  <div className="w-16 h-16 rounded-full bg-finance-gradient mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary-blue transition-colors">{name}</h3>
-                  <p className="text-muted-foreground text-sm">{courses} courses available</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* YouTube Videos Section */}
-      <YouTubeVideos />
-
-      {/* CTA Section */}
-      <section className="py-20 bg-finance-gradient text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Build Your Wealth?</h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
-            Join thousands of middle-class families who have transformed their financial lives 
-            with our expert guidance and proven strategies.
-          </p>
-          
-          <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-            <div className="glass-effect rounded-xl p-6">
-              <CheckCircle className="w-8 h-8 mx-auto mb-3 text-gold" />
-              <h3 className="font-semibold mb-2">Personalized Learning</h3>
-              <p className="text-sm opacity-90">Tailored to your income and goals</p>
-            </div>
-            <div className="glass-effect rounded-xl p-6">
-              <CheckCircle className="w-8 h-8 mx-auto mb-3 text-gold" />
-              <h3 className="font-semibold mb-2">Live Expert Sessions</h3>
-              <p className="text-sm opacity-90">Direct access to SEBI certified advisors</p>
-            </div>
-            <div className="glass-effect rounded-xl p-6">
-              <CheckCircle className="w-8 h-8 mx-auto mb-3 text-gold" />
-              <h3 className="font-semibold mb-2">Practical Strategies</h3>
-              <p className="text-sm opacity-90">Real-world application, not just theory</p>
-            </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button size="lg" className="h-14 px-8 bg-gold text-gold-foreground hover:bg-gold/90 text-lg font-semibold">
-              <BookOpen className="w-5 h-5 mr-3" />
-              Start Free Trial
-            </Button>
-            <Button size="lg" variant="outline" className="h-14 px-8 border-2 border-white text-white hover:bg-white hover:text-foreground text-lg font-semibold">
-              <Users className="w-5 h-5 mr-3" />
-              Book Expert Consultation
-            </Button>
           </div>
         </div>
       </section>
