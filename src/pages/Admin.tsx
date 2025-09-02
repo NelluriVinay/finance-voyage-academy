@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, UserCheck, UserX, Crown, Video, Plus } from "lucide-react";
 import VideoManagement from "@/components/admin/VideoManagement";
+import CourseManagement from "@/components/admin/CourseManagement";
 
 interface MemberData {
   id: string;
@@ -240,14 +241,18 @@ const Admin = () => {
           {/* Enhanced Management Tabs */}
           <div className="bg-card/50 backdrop-blur-sm rounded-2xl shadow-xl border-0 p-8">
             <Tabs defaultValue="members" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-14 bg-muted/50 rounded-xl p-1">
+              <TabsList className="grid w-full grid-cols-3 h-14 bg-muted/50 rounded-xl p-1">
                 <TabsTrigger value="members" className="flex items-center gap-3 h-12 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-lg transition-all">
                   <Users className="w-5 h-5" />
-                  <span className="font-semibold">Members Management</span>
+                  <span className="font-semibold">Members</span>
+                </TabsTrigger>
+                <TabsTrigger value="courses" className="flex items-center gap-3 h-12 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-lg transition-all">
+                  <Crown className="w-5 h-5" />
+                  <span className="font-semibold">Courses</span>
                 </TabsTrigger>
                 <TabsTrigger value="videos" className="flex items-center gap-3 h-12 rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-lg transition-all">
                   <Video className="w-5 h-5" />
-                  <span className="font-semibold">Content Management</span>
+                  <span className="font-semibold">Videos</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -347,6 +352,12 @@ const Admin = () => {
                     )}
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="courses" className="mt-8">
+                <div className="bg-card/50 backdrop-blur-sm rounded-xl shadow-xl border-0 p-6">
+                  <CourseManagement />
+                </div>
               </TabsContent>
 
               <TabsContent value="videos" className="mt-8">
