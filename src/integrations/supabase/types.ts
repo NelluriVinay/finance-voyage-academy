@@ -118,13 +118,18 @@ export type Database = {
           category: Database["public"]["Enums"]["video_category"] | null
           created_at: string
           description: string | null
+          difficulty_level: string | null
           duration_hours: number | null
           enrolled_count: number | null
-          expert_id: string
+          expert_id: string | null
           id: string
+          instructor_name: string | null
           is_active: boolean | null
+          learning_outcomes: string[] | null
           level: string | null
           max_students: number | null
+          prerequisites: string[] | null
+          preview_video_url: string | null
           price_inr: number
           thumbnail_url: string | null
           title: string
@@ -134,13 +139,18 @@ export type Database = {
           category?: Database["public"]["Enums"]["video_category"] | null
           created_at?: string
           description?: string | null
+          difficulty_level?: string | null
           duration_hours?: number | null
           enrolled_count?: number | null
-          expert_id: string
+          expert_id?: string | null
           id?: string
+          instructor_name?: string | null
           is_active?: boolean | null
+          learning_outcomes?: string[] | null
           level?: string | null
           max_students?: number | null
+          prerequisites?: string[] | null
+          preview_video_url?: string | null
           price_inr?: number
           thumbnail_url?: string | null
           title: string
@@ -150,13 +160,18 @@ export type Database = {
           category?: Database["public"]["Enums"]["video_category"] | null
           created_at?: string
           description?: string | null
+          difficulty_level?: string | null
           duration_hours?: number | null
           enrolled_count?: number | null
-          expert_id?: string
+          expert_id?: string | null
           id?: string
+          instructor_name?: string | null
           is_active?: boolean | null
+          learning_outcomes?: string[] | null
           level?: string | null
           max_students?: number | null
+          prerequisites?: string[] | null
+          preview_video_url?: string | null
           price_inr?: number
           thumbnail_url?: string | null
           title?: string
@@ -471,6 +486,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      make_user_admin: {
+        Args: { user_email: string }
+        Returns: undefined
       }
     }
     Enums: {

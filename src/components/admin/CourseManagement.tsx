@@ -103,7 +103,7 @@ const CourseManagement = () => {
         const insertData: CourseInsert = {
           ...formData,
           category: formData.category || null,
-          expert_id: "00000000-0000-0000-0000-000000000000" // Placeholder expert_id
+          expert_id: null // No expert assigned initially
         };
         
         const { error } = await supabase
