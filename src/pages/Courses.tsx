@@ -82,6 +82,33 @@ const Courses = () => {
     }).format(price);
   };
 
+  const handleEnrollment = async (course: Course) => {
+    try {
+      // For free courses, show success message
+      if (course.price_inr === 0) {
+        toast({
+          title: "Enrollment Successful!",
+          description: `You have successfully enrolled in "${course.title}".`,
+        });
+        return;
+      }
+
+      // For paid courses, show payment required message
+      toast({
+        title: "Payment Required",
+        description: `This course costs ${formatPrice(course.price_inr)}. Payment integration coming soon!`,
+        variant: "destructive",
+      });
+    } catch (error) {
+      console.error("Enrollment error:", error);
+      toast({
+        title: "Enrollment Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <SEO
@@ -174,7 +201,10 @@ const Courses = () => {
                     )}
                     
                     <div className="pt-2">
-                      <Button className="w-full">
+                      <Button 
+                        className="w-full" 
+                        onClick={() => handleEnrollment(course)}
+                      >
                         {course.price_inr === 0 ? "Enroll Free" : "Enroll Now"}
                       </Button>
                     </div>
