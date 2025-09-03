@@ -71,9 +71,17 @@ const Courses = () => {
     }
   };
 
-  const filtered = active === "All" 
-    ? courses 
-    : courses.filter((c) => c.category === active);
+  const getFilteredCourses = () => {
+    if (active === "All") {
+      return courses;
+    } else if (active === "Free") {
+      return courses.filter((c) => c.price_inr === 0);
+    } else {
+      return courses.filter((c) => c.category === active);
+    }
+  };
+
+  const filtered = getFilteredCourses();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -125,6 +133,13 @@ const Courses = () => {
           >
             All
           </Button>
+          <Button
+            variant={active === "Free" ? "premium" : "outline"}
+            onClick={() => setActive("Free")}
+            className="rounded-full"
+          >
+            Free Courses
+          </Button>
           {CATEGORIES.map((category) => (
             <Button
               key={category.value}
@@ -169,9 +184,14 @@ const Courses = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <IndianRupee className="w-4 h-4 text-green-600" />
-                        <span className="font-semibold text-green-600">
-                          {course.price_inr === 0 ? "Free" : formatPrice(course.price_inr)}
+                        <span className={`font-semibold ${course.price_inr === 0 ? 'text-green-600 text-lg' : 'text-green-600'}`}>
+                          {course.price_inr === 0 ? "FREE" : formatPrice(course.price_inr)}
                         </span>
+                        {course.price_inr === 0 && (
+                          <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 border-green-200">
+                            Free Course
+                          </Badge>
+                        )}
                       </div>
                       {course.duration_hours && (
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -216,7 +236,11 @@ const Courses = () => {
                 <BookOpen className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-muted-foreground">No courses found</h3>
                 <p className="text-sm text-muted-foreground">
-                  {active === "All" ? "No courses available yet." : `No courses in the ${CATEGORIES.find(c => c.value === active)?.label || active} category.`}
+                  {active === "All" 
+                    ? "No courses available yet." 
+                    : active === "Free"
+                    ? "No free courses available yet."
+                    : `No courses in the ${CATEGORIES.find(c => c.value === active)?.label || active} category.`}
                 </p>
               </div>
             )}
