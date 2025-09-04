@@ -241,6 +241,39 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_requests: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          message: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
@@ -493,7 +526,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role: "admin" | "moderator" | "user" | "member"
       booking_status: "pending" | "confirmed" | "completed" | "cancelled"
       notification_type: "email" | "sms" | "push"
       payment_status: "pending" | "completed" | "failed" | "refunded"
@@ -632,7 +665,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: ["admin", "moderator", "user", "member"],
       booking_status: ["pending", "confirmed", "completed", "cancelled"],
       notification_type: ["email", "sms", "push"],
       payment_status: ["pending", "completed", "failed", "refunded"],
