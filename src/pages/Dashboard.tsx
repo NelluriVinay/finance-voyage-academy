@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import ExpertBooking from "@/components/ExpertBooking";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const [userRoles, setUserRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -15,16 +18,35 @@ const Dashboard = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => {
+          fetchUserRoles(session.user.id);
+        }, 0);
+      } else {
+        setUserRoles([]);
+      }
       setLoading(false);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserRoles(session.user.id);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUserRoles = async (userId: string) => {
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+    
+    setUserRoles(roles?.map(r => r.role) || []);
+  };
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -54,7 +76,12 @@ const Dashboard = () => {
       />
       <section className="container mx-auto py-10">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Welcome to Your Dashboard</h1>
+          <div>
+            <h1 className="text-3xl font-bold">Welcome to Your Dashboard</h1>
+            {userRoles.includes('member') && (
+              <Badge variant="secondary" className="mt-2">Premium Member</Badge>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
               {user?.email}
@@ -110,6 +137,32 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Expert Booking - Members Only */}
+        {userRoles.includes('member') && (
+          <div className="mt-8">
+            <ExpertBooking />
+          </div>
+        )}
+
+        {!userRoles.includes('member') && (
+          <div className="mt-8">
+            <Card className="border-accent/20 bg-accent/5">
+              <CardHeader>
+                <CardTitle>🔒 Premium Feature: 1-on-1 Expert Sessions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Get personalized finance guidance from SEBI-certified experts. 
+                  Book 1-on-1 sessions, set your preferred timings, and discuss your specific financial goals.
+                </p>
+                <Button variant="premium" asChild>
+                  <a href="/membership">Upgrade to Premium</a>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <Card>
