@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import ExpertBooking from "@/components/ExpertBooking";
+import FinanceChatbot from "@/components/FinanceChatbot";
 import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
@@ -138,10 +139,11 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Expert Booking - Members Only */}
+        {/* Expert Booking and Finance Chat - Members Only */}
         {userRoles.includes('member') && (
-          <div className="mt-8">
+          <div className="space-y-8 mt-8">
             <ExpertBooking />
+            <FinanceChatbot />
           </div>
         )}
 
