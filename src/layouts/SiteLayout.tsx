@@ -2,9 +2,41 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import Footer from "@/components/layout/Footer";
+import FinanceChatbot from "@/components/FinanceChatbot";
 import { Menu } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const SiteLayout = () => {
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        fetchUserRoles(session.user.id);
+      } else {
+        setUserRoles([]);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        fetchUserRoles(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserRoles = async (userId: string) => {
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+    
+    setUserRoles(roles?.map(r => r.role) || []);
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background text-foreground">
@@ -35,6 +67,9 @@ const SiteLayout = () => {
           
           <Footer />
         </div>
+        
+        {/* Global Finance Chatbot */}
+        <FinanceChatbot userRoles={userRoles} />
       </div>
     </SidebarProvider>
   );

@@ -196,8 +196,6 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Floating Finance Chatbot - Members Only */}
-        <FinanceChatbot userRoles={userRoles} />
       </section>
     </>
   );
