@@ -139,11 +139,10 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Expert Booking and Finance Chat - Members Only */}
+        {/* Expert Booking - Members Only */}
         {userRoles.includes('member') && (
-          <div className="space-y-8 mt-8">
+          <div className="mt-8">
             <ExpertBooking />
-            <FinanceChatbot />
           </div>
         )}
 
@@ -196,6 +195,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Floating Finance Chatbot - Members Only */}
+        <FinanceChatbot userRoles={userRoles} />
       </section>
     </>
   );
