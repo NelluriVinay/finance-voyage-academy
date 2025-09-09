@@ -54,8 +54,15 @@ const FinanceChatbot = ({ userRoles }: FinanceChatbotProps) => {
     setIsLoading(true);
 
     try {
+      // Get current user ID
+      const { data: { session } } = await supabase.auth.getSession();
+      const userId = session?.user?.id;
+
       const { data, error } = await supabase.functions.invoke('finance-chat', {
-        body: { message: inputMessage }
+        body: { 
+          message: inputMessage,
+          userId: userId 
+        }
       });
 
       if (error) {
