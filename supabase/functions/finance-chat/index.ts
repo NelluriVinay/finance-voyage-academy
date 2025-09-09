@@ -31,97 +31,15 @@ serve(async (req) => {
       );
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    
-    console.log('OpenAI API Key exists:', !!openAIApiKey);
-    
-    if (!openAIApiKey) {
-      console.error('OpenAI API key not found in environment variables');
-      return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
     // Fetch relevant financial data
     const financialContext = await getFinancialContext(supabase, userId);
     
-    console.log('Sending request to OpenAI for finance chat with context');
+    console.log('Processing finance chat with custom AI');
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are a professional finance expert and advisor with access to comprehensive financial data. Your role is to provide helpful, accurate, and educational financial guidance.
+    // Use custom finance AI instead of OpenAI
+    const botResponse = await generateFinanceResponse(message, financialContext);
 
-Available Data Context:
-${financialContext}
-
-Key guidelines:
-- Use the provided financial data to give contextual advice
-- Provide clear, actionable financial advice based on available courses, expert insights, and market data
-- Explain financial concepts in simple terms using examples from the available educational content
-- Focus on budgeting, investing, saving, debt management, and financial planning
-- Reference relevant courses or expert sessions when appropriate
-- Always remind users that this is educational guidance and they should consult with licensed financial advisors for personalized advice
-- Be encouraging and supportive while being realistic about financial challenges
-- Use specific examples from the educational content when relevant
-- If asked about investments, reference available courses or expert guidance
-
-Keep responses concise but informative, typically 2-4 paragraphs unless more detail is specifically requested.`
-          },
-          {
-            role: 'user',
-            content: message
-          }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
-    });
-
-    console.log('OpenAI response status:', response.status);
-    console.log('OpenAI response headers:', Object.fromEntries(response.headers.entries()));
-
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('OpenAI API error details:', {
-        status: response.status,
-        statusText: response.statusText,
-        errorData: errorData
-      });
-      return new Response(
-        JSON.stringify({ 
-          error: 'Failed to get response from AI',
-          details: `OpenAI API returned ${response.status}: ${errorData}`
-        }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
-
-    const data = await response.json();
-    console.log('OpenAI response structure:', {
-      hasChoices: !!data.choices,
-      choicesLength: data.choices?.length,
-      hasMessage: !!data.choices?.[0]?.message,
-      hasContent: !!data.choices?.[0]?.message?.content
-    });
-    const botResponse = data.choices[0].message.content;
-
-    console.log('Successfully got response from OpenAI');
+    console.log('Successfully generated custom finance response');
 
     return new Response(
       JSON.stringify({ response: botResponse }),
@@ -140,6 +58,191 @@ Keep responses concise but informative, typically 2-4 paragraphs unless more det
     );
   }
 });
+
+async function generateFinanceResponse(message: string, context: string) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Finance knowledge base
+  const financeKnowledge = {
+    budgeting: {
+      keywords: ['budget', 'budgeting', 'expense', 'spending', 'money management', 'track expenses'],
+      response: `📊 **Budgeting Fundamentals**
+
+Creating a budget is the foundation of financial health. Here's the 50/30/20 rule:
+• **50%** for needs (rent, groceries, utilities)
+• **30%** for wants (entertainment, dining out)
+• **20%** for savings and debt payments
+
+**Quick Tips:**
+• Track expenses for a month to understand spending patterns
+• Use apps or spreadsheets to monitor daily expenses
+• Review and adjust monthly
+• Pay yourself first - save before spending
+
+${context.includes('AVAILABLE FINANCIAL EDUCATION') ? '\n💡 Check our budgeting courses for detailed guidance!' : ''}`
+    },
+    investing: {
+      keywords: ['invest', 'investment', 'stocks', 'mutual funds', 'sip', 'portfolio', 'market', 'equity'],
+      response: `📈 **Smart Investing for Indians**
+
+**Start with these basics:**
+• **SIP in Mutual Funds** - Start with ₹1,000/month
+• **Diversify**: Equity (60%) + Debt (30%) + Gold (10%)
+• **Emergency Fund First** - 6-12 months expenses
+• **Long-term mindset** - Stay invested for 5+ years
+
+**Popular Options:**
+• Index funds (low cost, market returns)
+• Large-cap equity funds (stable growth)
+• PPF for tax savings (15-year lock-in)
+• ELSS for tax deduction under 80C
+
+${context.includes('VERIFIED FINANCIAL EXPERTS') ? '\n👨‍💼 Book a session with our certified experts for personalized advice!' : ''}`
+    },
+    savings: {
+      keywords: ['save', 'saving', 'emergency fund', 'fixed deposit', 'fd', 'savings account'],
+      response: `💰 **Building Your Savings**
+
+**Emergency Fund Priority:**
+• Target: 6-12 months of expenses
+• Keep in liquid savings account or short-term FDs
+• Don't invest emergency money in markets
+
+**Savings Ladder:**
+1. **High-yield savings** (3-4% returns)
+2. **Fixed Deposits** (5-7% returns, safe)
+3. **Debt mutual funds** (6-8% returns, low risk)
+4. **PPF** (7-8% returns, tax-free, 15-year lock)
+
+**Pro Tip:** Automate savings on salary day - treat it like a non-negotiable expense!
+
+${context.includes('Current trend showing positive momentum') ? '\n📊 Markets are positive - good time to start SIPs!' : ''}`
+    },
+    debt: {
+      keywords: ['debt', 'loan', 'credit card', 'emi', 'personal loan', 'home loan'],
+      response: `💳 **Debt Management Strategy**
+
+**Priority Order (Highest interest first):**
+1. **Credit Cards** (18-48% interest) - Pay off immediately
+2. **Personal Loans** (10-15% interest)
+3. **Car Loans** (8-12% interest)
+4. **Home Loans** (8-10% interest) - Lowest priority
+
+**Smart Strategies:**
+• Pay more than minimum on credit cards
+• Consider debt consolidation for multiple loans
+• Use balance transfer for credit card debt
+• Never withdraw cash from credit cards
+
+**Golden Rule:** If investment returns < loan interest rate, pay off debt first!
+
+${context.includes('Educational courses available') ? '\n📚 Explore our debt management courses for detailed strategies!' : ''}`
+    },
+    tax: {
+      keywords: ['tax', 'tax saving', '80c', 'income tax', 'deduction', 'tax planning'],
+      response: `📋 **Tax Saving Guide (India)**
+
+**Section 80C Investments (₹1.5L limit):**
+• **ELSS Mutual Funds** (3-year lock, market returns)
+• **PPF** (15-year lock, 7-8% tax-free returns)
+• **EPF** (Employer contribution counts)
+• **Life Insurance Premium**
+• **Home Loan Principal**
+
+**Other Deductions:**
+• **80D**: Health insurance (₹25K-₹50K)
+• **80E**: Education loan interest (no limit)
+• **80G**: Donations to charity
+
+**Tax-Free Investments:**
+• PPF returns are completely tax-free
+• ELSS gains above ₹1L are taxed at 10%
+
+Start tax planning in April, not March!`
+    },
+    retirement: {
+      keywords: ['retirement', 'pension', 'retirement planning', 'old age', 'corpus'],
+      response: `🏖️ **Retirement Planning**
+
+**Target Corpus Calculation:**
+• Current monthly expenses × 12 × 25-30 times
+• Example: ₹50K/month = ₹1.5-2 Crores needed
+
+**Investment Mix by Age:**
+• **20s-30s**: 80% equity, 20% debt
+• **40s**: 60% equity, 40% debt  
+• **50s+**: 40% equity, 60% debt
+
+**Retirement Vehicles:**
+• **NPS** (National Pension System) - Tax benefits + low cost
+• **PPF** - 15-year cycles, tax-free
+• **Equity SIPs** - Long-term wealth creation
+• **EPF** - Employer matching, stable returns
+
+**Start Early Advantage:** ₹5K/month from age 25 = ₹4+ Crores by 60!`
+    },
+    insurance: {
+      keywords: ['insurance', 'term insurance', 'health insurance', 'life insurance'],
+      response: `🛡️ **Insurance Essentials**
+
+**Life Insurance:**
+• **Term Insurance Only** - 10-15x annual income
+• Avoid endowment/ULIP plans
+• Buy when young for lower premiums
+• Separate insurance from investment
+
+**Health Insurance:**
+• **Family Floater**: ₹5-10L minimum
+• **Top-up Plans**: Additional ₹10-20L coverage
+• Check cashless network hospitals
+• Read exclusions carefully
+
+**Key Insurance Rules:**
+• Insurance is protection, not investment
+• Higher coverage > fancy features  
+• Review and increase coverage annually
+• Inform nominees about all policies
+
+**Don't Over-insure:** Single people need less life insurance than families.`
+    }
+  };
+
+  // Find matching topic
+  let bestMatch = null;
+  let maxMatches = 0;
+
+  for (const [topic, data] of Object.entries(financeKnowledge)) {
+    const matches = data.keywords.filter(keyword => lowerMessage.includes(keyword)).length;
+    if (matches > maxMatches) {
+      maxMatches = matches;
+      bestMatch = topic;
+    }
+  }
+
+  // Generate response
+  if (bestMatch && maxMatches > 0) {
+    return financeKnowledge[bestMatch].response;
+  }
+
+  // Default response for general queries
+  return `🎯 **WealthWise Academy Finance Assistant**
+
+I can help you with:
+• **💰 Budgeting & Expense Tracking**
+• **📈 Investing (SIP, Mutual Funds, Stocks)**
+• **💳 Debt Management & Credit Cards** 
+• **🏛️ Tax Saving (80C, ELSS, PPF)**
+• **🏖️ Retirement Planning**
+• **🛡️ Insurance (Term, Health)**
+
+${context.includes('AVAILABLE FINANCIAL EDUCATION') ? '\n📚 **Available Resources:**\nWe have expert courses and certified financial advisors to help you build wealth systematically.\n' : ''}
+
+**Current Market:** Indian markets showing positive momentum - good time to start your investment journey!
+
+**Quick Tip:** Start with emergency fund → SIP in index funds → gradually increase investments.
+
+What specific area would you like to explore? Just ask about budgeting, investing, taxes, or any other finance topic!`;
+}
 
 async function getFinancialContext(supabase: any, userId?: string) {
   try {
