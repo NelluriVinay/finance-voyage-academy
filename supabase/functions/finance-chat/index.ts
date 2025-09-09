@@ -33,7 +33,10 @@ serve(async (req) => {
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     
+    console.log('OpenAI API Key exists:', !!openAIApiKey);
+    
     if (!openAIApiKey) {
+      console.error('OpenAI API key not found in environment variables');
       return new Response(
         JSON.stringify({ error: 'OpenAI API key not configured' }),
         { 
@@ -87,11 +90,21 @@ Keep responses concise but informative, typically 2-4 paragraphs unless more det
       }),
     });
 
+    console.log('OpenAI response status:', response.status);
+    console.log('OpenAI response headers:', Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('OpenAI API error:', errorData);
+      console.error('OpenAI API error details:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData: errorData
+      });
       return new Response(
-        JSON.stringify({ error: 'Failed to get response from AI' }),
+        JSON.stringify({ 
+          error: 'Failed to get response from AI',
+          details: `OpenAI API returned ${response.status}: ${errorData}`
+        }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -100,6 +113,12 @@ Keep responses concise but informative, typically 2-4 paragraphs unless more det
     }
 
     const data = await response.json();
+    console.log('OpenAI response structure:', {
+      hasChoices: !!data.choices,
+      choicesLength: data.choices?.length,
+      hasMessage: !!data.choices?.[0]?.message,
+      hasContent: !!data.choices?.[0]?.message?.content
+    });
     const botResponse = data.choices[0].message.content;
 
     console.log('Successfully got response from OpenAI');
