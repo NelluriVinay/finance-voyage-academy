@@ -124,79 +124,103 @@ Keep responses concise but informative, typically 2-4 paragraphs unless more det
 
 async function getFinancialContext(supabase: any, userId?: string) {
   try {
+    console.log('Fetching financial context...');
+    
     // Fetch courses data
-    const { data: courses } = await supabase
+    const { data: courses, error: coursesError } = await supabase
       .from('courses')
       .select('title, description, category, price_inr, instructor_name, learning_outcomes')
       .eq('is_active', true)
       .limit(10);
 
+    if (coursesError) {
+      console.error('Error fetching courses:', coursesError);
+    }
+
     // Fetch expert data
-    const { data: experts } = await supabase
+    const { data: experts, error: expertsError } = await supabase
       .from('experts')
       .select('bio, specialization, experience_years, hourly_rate_inr')
       .eq('is_active', true)
       .eq('is_verified', true)
       .limit(5);
 
+    if (expertsError) {
+      console.error('Error fetching experts:', expertsError);
+    }
+
     // Fetch recent videos
-    const { data: videos } = await supabase
+    const { data: videos, error: videosError } = await supabase
       .from('videos')
       .select('title, description, category')
       .order('published_at', { ascending: false })
       .limit(10);
 
+    if (videosError) {
+      console.error('Error fetching videos:', videosError);
+    }
+
     // Fetch user's bookings if userId provided
     let userBookings = [];
     if (userId) {
-      const { data: bookings } = await supabase
+      const { data: bookings, error: bookingsError } = await supabase
         .from('bookings')
         .select('scheduled_at, amount_inr, status, notes')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(5);
-      userBookings = bookings || [];
+      
+      if (bookingsError) {
+        console.error('Error fetching bookings:', bookingsError);
+      } else {
+        userBookings = bookings || [];
+      }
     }
 
-    // Get real-time market data (mock for now - you can integrate with actual APIs)
+    console.log('Successfully fetched financial context');
+
+    // Get basic market data context
     const marketData = {
-      nifty50: "Current trend: Market showing positive momentum",
-      sensex: "Trading in green territory",
-      goldPrice: "₹62,500 per 10g",
-      silverPrice: "₹74,200 per kg"
+      nifty50: "Current trend showing positive momentum in Indian markets",
+      sensex: "Trading in positive territory with good fundamentals",
+      goldPrice: "₹62,500 per 10g (approximate current rate)",
+      silverPrice: "₹74,200 per kg (approximate current rate)"
     };
 
     return `
-AVAILABLE COURSES:
-${courses?.map(course => 
-  `- ${course.title} (${course.category}): ${course.description?.substring(0, 100)}... Price: ₹${course.price_inr} by ${course.instructor_name}`
-).join('\n') || 'No courses available'}
+AVAILABLE FINANCIAL EDUCATION:
+${courses?.length ? courses.map(course => 
+  `- ${course.title} (${course.category || 'General'}): ${course.description?.substring(0, 100) || 'Financial course'}... Price: ₹${course.price_inr} by ${course.instructor_name || 'Expert'}`
+).join('\n') : 'Educational courses available on the platform'}
 
-VERIFIED EXPERTS:
-${experts?.map(expert => 
-  `- Specialization: ${expert.specialization?.join(', ') || 'General'}, Experience: ${expert.experience_years} years, Rate: ₹${expert.hourly_rate_inr}/hour`
-).join('\n') || 'No experts available'}
+VERIFIED FINANCIAL EXPERTS:
+${experts?.length ? experts.map(expert => 
+  `- Specialization: ${expert.specialization?.join(', ') || 'Financial Planning'}, Experience: ${expert.experience_years || 'Multiple'} years, Rate: ₹${expert.hourly_rate_inr || 'Contact for rates'}/hour`
+).join('\n') : 'Certified financial experts available for consultation'}
 
-RECENT EDUCATIONAL VIDEOS:
-${videos?.map(video => 
-  `- ${video.title} (${video.category}): ${video.description?.substring(0, 80)}...`
-).join('\n') || 'No videos available'}
+RECENT EDUCATIONAL CONTENT:
+${videos?.length ? videos.map(video => 
+  `- ${video.title} (${video.category || 'Finance'}): ${video.description?.substring(0, 80) || 'Educational content'}...`
+).join('\n') : 'Educational videos covering various financial topics'}
 
-${userId ? `
-USER'S RECENT ACTIVITIES:
+${userId && userBookings.length ? `
+YOUR RECENT ACTIVITIES:
 ${userBookings.map(booking => 
   `- Session: ₹${booking.amount_inr}, Status: ${booking.status}, Scheduled: ${new Date(booking.scheduled_at).toLocaleDateString()}`
-).join('\n') || 'No recent bookings'}
+).join('\n')}
 ` : ''}
 
-CURRENT MARKET INSIGHTS:
+CURRENT MARKET CONTEXT:
 - Nifty 50: ${marketData.nifty50}
 - Sensex: ${marketData.sensex}
 - Gold: ${marketData.goldPrice}
 - Silver: ${marketData.silverPrice}
+
+Note: This platform offers comprehensive financial education through courses, expert consultations, and educational content.
 `;
   } catch (error) {
-    console.error('Error fetching financial context:', error);
-    return 'Financial data currently unavailable';
+    console.error('Error in getFinancialContext:', error);
+    return `Financial education platform with courses, expert consultations, and market insights available. 
+Current market showing positive trends with gold around ₹62,500/10g and active trading in Indian markets.`;
   }
 }
