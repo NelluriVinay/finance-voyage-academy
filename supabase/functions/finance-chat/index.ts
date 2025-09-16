@@ -62,7 +62,7 @@ serve(async (req) => {
 async function generateFinanceResponse(message: string, context: string) {
   const lowerMessage = message.toLowerCase();
   
-  // Finance knowledge base
+  // Comprehensive Finance knowledge base
   const financeKnowledge = {
     budgeting: {
       keywords: ['budget', 'budgeting', 'expense', 'spending', 'money management', 'track expenses'],
@@ -99,111 +99,221 @@ ${context.includes('AVAILABLE FINANCIAL EDUCATION') ? '\n💡 Check our budgetin
 
 ${context.includes('VERIFIED FINANCIAL EXPERTS') ? '\n👨‍💼 Book a session with our certified experts for personalized advice!' : ''}`
     },
-    savings: {
-      keywords: ['save', 'saving', 'emergency fund', 'fixed deposit', 'fd', 'savings account'],
-      response: `💰 **Building Your Savings**
+    stockmarket: {
+      keywords: ['stock market', 'nifty', 'sensex', 'shares', 'trading', 'bse', 'nse', 'ipo', 'dividend'],
+      response: `📈 **Indian Stock Market Guide**
 
-**Emergency Fund Priority:**
-• Target: 6-12 months of expenses
-• Keep in liquid savings account or short-term FDs
-• Don't invest emergency money in markets
+**Major Indices:**
+• **Nifty 50**: Top 50 companies by market cap
+• **Sensex**: 30 largest companies on BSE
+• **Bank Nifty**: Banking sector index
+• **Nifty Midcap/Smallcap**: Mid and small companies
 
-**Savings Ladder:**
-1. **High-yield savings** (3-4% returns)
-2. **Fixed Deposits** (5-7% returns, safe)
-3. **Debt mutual funds** (6-8% returns, low risk)
-4. **PPF** (7-8% returns, tax-free, 15-year lock)
+**Trading vs Investing:**
+• **Trading**: Short-term (days/weeks) - High risk
+• **Investing**: Long-term (years) - Lower risk
+• **SIP**: Systematic monthly investing
 
-**Pro Tip:** Automate savings on salary day - treat it like a non-negotiable expense!
+**Stock Selection Basics:**
+• Check P/E ratio (Price to Earnings)
+• Look at debt-to-equity ratio
+• Analyze revenue growth
+• Read annual reports
 
-${context.includes('Current trend showing positive momentum') ? '\n📊 Markets are positive - good time to start SIPs!' : ''}`
+**Risk Management:**
+• Never put all money in one stock
+• Diversify across sectors
+• Set stop-loss limits
+• Invest only surplus money
+
+**Current Market:** Nifty trading around 21,000-22,000 levels with positive momentum.`
     },
-    debt: {
-      keywords: ['debt', 'loan', 'credit card', 'emi', 'personal loan', 'home loan'],
-      response: `💳 **Debt Management Strategy**
+    banking: {
+      keywords: ['bank', 'banking', 'account', 'loan', 'credit', 'debit', 'rtgs', 'neft', 'upi'],
+      response: `🏦 **Banking Essentials**
 
-**Priority Order (Highest interest first):**
-1. **Credit Cards** (18-48% interest) - Pay off immediately
-2. **Personal Loans** (10-15% interest)
-3. **Car Loans** (8-12% interest)
-4. **Home Loans** (8-10% interest) - Lowest priority
+**Account Types:**
+• **Savings**: 3-4% interest, high liquidity
+• **Current**: For business, no interest
+• **FD**: 5-7% fixed returns, locked period
+• **RD**: Monthly deposits, fixed returns
 
-**Smart Strategies:**
-• Pay more than minimum on credit cards
-• Consider debt consolidation for multiple loans
-• Use balance transfer for credit card debt
-• Never withdraw cash from credit cards
+**Digital Banking:**
+• **UPI**: Instant transfers, 24/7 available
+• **NEFT**: Up to ₹10L, charges apply
+• **RTGS**: Above ₹2L, real-time settlement
+• **IMPS**: Immediate transfers, 24/7
 
-**Golden Rule:** If investment returns < loan interest rate, pay off debt first!
+**Credit Products:**
+• **Personal Loan**: 10-15% interest, unsecured
+• **Home Loan**: 8-10% interest, longest tenure
+• **Car Loan**: 8-12% interest, asset-backed
+• **Credit Card**: 18-48% interest, revolving credit
 
-${context.includes('Educational courses available') ? '\n📚 Explore our debt management courses for detailed strategies!' : ''}`
+**Banking Tips:**
+• Maintain minimum balance to avoid charges
+• Use ATMs of your bank to avoid fees
+• Enable SMS/email alerts for transactions
+• Keep KYC documents updated
+
+**Interest Rates:** Current repo rate is 6.5%, affecting all loan rates.`
     },
-    tax: {
-      keywords: ['tax', 'tax saving', '80c', 'income tax', 'deduction', 'tax planning'],
-      response: `📋 **Tax Saving Guide (India)**
+    crypto: {
+      keywords: ['crypto', 'cryptocurrency', 'bitcoin', 'ethereum', 'blockchain', 'digital currency'],
+      response: `₿ **Cryptocurrency in India**
 
-**Section 80C Investments (₹1.5L limit):**
-• **ELSS Mutual Funds** (3-year lock, market returns)
-• **PPF** (15-year lock, 7-8% tax-free returns)
-• **EPF** (Employer contribution counts)
-• **Life Insurance Premium**
-• **Home Loan Principal**
+**Current Legal Status:**
+• Cryptocurrencies are legal in India
+• 30% tax on crypto gains + 1% TDS
+• No set-off of losses allowed
+• Treated as digital assets, not currency
 
-**Other Deductions:**
-• **80D**: Health insurance (₹25K-₹50K)
-• **80E**: Education loan interest (no limit)
-• **80G**: Donations to charity
+**Popular Cryptocurrencies:**
+• **Bitcoin (BTC)**: First and largest crypto
+• **Ethereum (ETH)**: Smart contract platform
+• **Binance Coin (BNB)**: Exchange token
+• **Cardano (ADA)**: Proof-of-stake blockchain
 
-**Tax-Free Investments:**
-• PPF returns are completely tax-free
-• ELSS gains above ₹1L are taxed at 10%
+**Investment Approach:**
+• Start with small amounts (1-5% of portfolio)
+• Focus on established coins (BTC, ETH)
+• Use reputable Indian exchanges (WazirX, CoinDCX)
+• Never invest more than you can afford to lose
 
-Start tax planning in April, not March!`
+**Risks:**
+• Extremely volatile (50%+ swings)
+• Regulatory uncertainty
+• Technical risks (wallet security)
+• No consumer protection
+
+**Current Trend:** Crypto markets showing institutional adoption but remain highly volatile.`
     },
-    retirement: {
-      keywords: ['retirement', 'pension', 'retirement planning', 'old age', 'corpus'],
-      response: `🏖️ **Retirement Planning**
+    realEstate: {
+      keywords: ['real estate', 'property', 'house', 'flat', 'rent', 'rera', 'home buying'],
+      response: `🏠 **Real Estate Investment**
 
-**Target Corpus Calculation:**
-• Current monthly expenses × 12 × 25-30 times
-• Example: ₹50K/month = ₹1.5-2 Crores needed
+**Home Buying Process:**
+• Check RERA registration
+• Verify clear title documents
+• Get legal verification done
+• Arrange home loan pre-approval
 
-**Investment Mix by Age:**
-• **20s-30s**: 80% equity, 20% debt
-• **40s**: 60% equity, 40% debt  
-• **50s+**: 40% equity, 60% debt
+**Investment Types:**
+• **Residential**: Flats, houses for rental income
+• **Commercial**: Offices, shops for business rental
+• **REITs**: Real Estate Investment Trusts (stock-like)
+• **Land**: Raw land for appreciation
 
-**Retirement Vehicles:**
-• **NPS** (National Pension System) - Tax benefits + low cost
-• **PPF** - 15-year cycles, tax-free
-• **Equity SIPs** - Long-term wealth creation
-• **EPF** - Employer matching, stable returns
+**Financing Options:**
+• **Home Loan**: Up to 80% property value, 8-10% interest
+• **Down Payment**: Minimum 20% of property value
+• **EMI Calculation**: Use 40% of income rule
+• **Stamp Duty**: 4-10% depending on state
 
-**Start Early Advantage:** ₹5K/month from age 25 = ₹4+ Crores by 60!`
+**Key Considerations:**
+• Location and connectivity
+• Builder reputation and track record
+• Possession timeline
+• Hidden costs (maintenance, taxes)
+
+**Current Market:** Property prices stable with good financing options available.`
+    },
+    mutualFunds: {
+      keywords: ['mutual fund', 'sip', 'nav', 'aum', 'expense ratio', 'fund house'],
+      response: `💼 **Mutual Funds Mastery**
+
+**Fund Categories:**
+• **Equity Funds**: High risk, high returns (12-15% historical)
+• **Debt Funds**: Low risk, stable returns (6-8%)
+• **Hybrid Funds**: Mix of equity and debt (8-12%)
+• **Index Funds**: Track market indices (low cost)
+
+**Popular Fund Houses:**
+• SBI Mutual Fund, HDFC AMC, ICICI Prudential
+• Axis Mutual Fund, Kotak Mahindra AMC
+• DSP Investment Managers, UTI AMC
+
+**SIP Strategy:**
+• Start with ₹1,000/month in diversified equity fund
+• Increase SIP by 10% annually
+• Continue for minimum 5-7 years
+• Don't stop during market downturns
+
+**Key Metrics:**
+• **NAV**: Net Asset Value (price per unit)
+• **Expense Ratio**: Annual fee (0.5-2.5%)
+• **AUM**: Assets Under Management (fund size)
+• **Returns**: 1Y, 3Y, 5Y performance
+
+**Tax Benefits:**
+• ELSS funds offer 80C deduction
+• Long-term gains above ₹1L taxed at 10%
+• No TDS on mutual fund investments`
+    },
+    goldSilver: {
+      keywords: ['gold', 'silver', 'precious metals', 'gold etf', 'digital gold'],
+      response: `🥇 **Gold & Silver Investment**
+
+**Investment Options:**
+• **Physical Gold**: Jewelry, coins, bars
+• **Gold ETF**: Exchange-traded funds
+• **Digital Gold**: Apps like Paytm Gold, PhonePe
+• **Gold Mutual Funds**: Fund of funds investing in Gold ETF
+
+**Current Rates:**
+• **Gold**: ₹62,500-65,000 per 10 grams
+• **Silver**: ₹74,000-78,000 per kg
+• Prices vary with international rates and GST
+
+**Allocation Strategy:**
+• Keep 5-10% portfolio in gold
+• Buy during festivals for better rates
+• Prefer ETF/Digital over physical for investment
+• Physical gold for emergency purposes
+
+**Tax Implications:**
+• Physical gold: 20% LTCG after indexation (3+ years)
+• Gold ETF: 10% LTCG without indexation (1+ year)
+• GST: 3% on gold, 3% on silver
+
+**Market Factors:**
+• International gold prices
+• Dollar strength/weakness
+• Inflation rates
+• Central bank policies`
     },
     insurance: {
       keywords: ['insurance', 'term insurance', 'health insurance', 'life insurance'],
-      response: `🛡️ **Insurance Essentials**
+      response: `🛡️ **Comprehensive Insurance Guide**
 
 **Life Insurance:**
-• **Term Insurance Only** - 10-15x annual income
-• Avoid endowment/ULIP plans
-• Buy when young for lower premiums
-• Separate insurance from investment
+• **Term Insurance**: 10-15x annual income coverage
+• **Endowment**: Avoid - poor returns
+• **ULIP**: Avoid - high charges
+• **Start early**: Lower premiums for life
 
 **Health Insurance:**
-• **Family Floater**: ₹5-10L minimum
-• **Top-up Plans**: Additional ₹10-20L coverage
-• Check cashless network hospitals
-• Read exclusions carefully
+• **Individual**: ₹5-10L basic coverage
+• **Family Floater**: ₹10-15L for family
+• **Super Top-up**: Additional ₹20-50L coverage
+• **Critical Illness**: Covers 30+ diseases
 
-**Key Insurance Rules:**
-• Insurance is protection, not investment
-• Higher coverage > fancy features  
-• Review and increase coverage annually
-• Inform nominees about all policies
+**Other Insurance:**
+• **Motor Insurance**: Mandatory third-party + comprehensive
+• **Travel Insurance**: International travel coverage
+• **Home Insurance**: Property and contents protection
 
-**Don't Over-insure:** Single people need less life insurance than families.`
+**Claim Process:**
+• Cashless: Direct settlement with hospitals
+• Reimbursement: Pay first, claim later
+• Keep all medical documents
+• Inform insurer within 24-48 hours
+
+**Key Tips:**
+• Read policy documents carefully
+• Disclose all pre-existing conditions
+• Compare online before buying
+• Renew on time to avoid lapses`
     }
   };
 

@@ -117,8 +117,8 @@ const FinanceChatbot = ({ userRoles }: FinanceChatbotProps) => {
       {/* Chat Panel */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 animate-scale-in">
-          <Card className="h-[500px] flex flex-col shadow-2xl border-primary/20">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-primary/5">
+          <Card className="h-[500px] flex flex-col shadow-2xl border-primary/20 overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 bg-primary/5 flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <MessageCircle className="w-5 h-5 text-primary" />
                 <CardTitle className="text-sm">Finance Expert Chat</CardTitle>
@@ -143,8 +143,8 @@ const FinanceChatbot = ({ userRoles }: FinanceChatbotProps) => {
               </div>
             </CardHeader>
             
-            <CardContent className="flex-1 flex flex-col space-y-4 p-4">
-              <ScrollArea className="flex-1 pr-4" ref={scrollAreaRef}>
+            <CardContent className="flex-1 flex flex-col space-y-4 p-4 min-h-0">
+              <ScrollArea className="flex-1 pr-4 min-h-0" ref={scrollAreaRef}>
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <div
@@ -160,13 +160,13 @@ const FinanceChatbot = ({ userRoles }: FinanceChatbotProps) => {
                       )}
                       
                       <div
-                        className={`max-w-[75%] rounded-lg p-2 text-xs ${
+                        className={`max-w-[70%] rounded-lg p-3 text-xs break-words ${
                           message.isBot
                             ? 'bg-muted text-foreground'
                             : 'bg-primary text-primary-foreground ml-auto'
                         }`}
                       >
-                        <p className="whitespace-pre-wrap">{message.content}</p>
+                        <p className="whitespace-pre-wrap overflow-wrap-anywhere">{message.content}</p>
                         <p className="text-[10px] opacity-70 mt-1">
                           {message.timestamp.toLocaleTimeString([], { 
                             hour: '2-digit', 
@@ -200,12 +200,12 @@ const FinanceChatbot = ({ userRoles }: FinanceChatbotProps) => {
                 </div>
               </ScrollArea>
               
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 flex-shrink-0">
                 <Input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask me about finance..."
+                  placeholder="Ask about stocks, banking, crypto..."
                   disabled={isLoading}
                   className="flex-1 text-sm"
                 />
